@@ -1,0 +1,11 @@
+name: nlp-deps
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - numpy
+  - pandas
+  - openpyxl
+  - xlsxwriter
+  - spacy
+  - spacy-lookups-data

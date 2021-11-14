@@ -26,7 +26,7 @@ def read_DataFrame_from_file(filename: str, numberOfRows: int = None):
 
 # %%
 
-DATA_INPUT_FILENAME = 'training_data.xlsx'
+DATA_INPUT_FILENAME = 'label.xlsx'
 NUMBER_OF_PARSABLE_RECORDS = 999
 
 
@@ -60,21 +60,21 @@ def get_entity_list(entry: dict, address: str):
             times = address.count(fromEntry)
             if times > 1:
                 tkn = address.split()
-                print('tkn: ', type(tkn))
-                print(fromEntry, ' - count times: ', times, ' item:', item, ' add: ', address)
+                #print('tkn: ', type(tkn))
+                #print(fromEntry, ' - count times: ', times, ' item:', item, ' add: ', address)
 
                 size = -1
                 for i in tkn:
                     if str(i).endswith(str(item[1])) and str(i).startswith(str(item[1])):
                         firstIdx = size + 1
                         lastIdx = firstIdx + len(str(i)) - 1
-                        print('item: ', item[1], ' first: ', firstIdx, ' last: ', lastIdx)
+                        #print('item: ', item[1], ' first: ', firstIdx, ' last: ', lastIdx)
                         entities.append((firstIdx, lastIdx, item[0]))
 
                     string = str(i)
                     length = len(string) - 1
                     size = size + length + 2
-                    print(address, 'size: ', size, ' len: ', len(string))
+                    #print(address, 'size: ', size, ' len: ', len(string))
 
 
             else:
@@ -90,21 +90,21 @@ def get_entity_list(entry: dict, address: str):
                     times = address.count(fromEntry)
                     if times > 1:
                         tkn = address.split()
-                        print('tkn: ', type(tkn))
-                        print(fromEntry, ' - count times: ', times, ' item:', item, ' add: ', address, ' alone:')
+                        #print('tkn: ', type(tkn))
+                        #print(fromEntry, ' - count times: ', times, ' item:', item, ' add: ', address, ' alone:')
 
                         size = -1
                         for i in tkn:
                             if str(i).endswith(str(item[1])) and str(i).startswith(str(item[1])):
                                 firstIdx = size + 1
                                 lastIdx = firstIdx + len(str(i)) - 1
-                                print('item: ', item[1], ' first: ', firstIdx, ' last: ', lastIdx)
+                                #print('item: ', item[1], ' first: ', firstIdx, ' last: ', lastIdx)
                                 entities.append((firstIdx, lastIdx, item[0]))
 
                             string = str(i)
                             length = len(string) - 1
                             size = size + length + 2
-                            print(address, 'size: ', size, ' len: ', len(string))
+                            #print(address, 'size: ', size, ' len: ', len(string))
 
                     else:
                         entities.append((span[0], span[1], item[0]))

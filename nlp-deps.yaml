@@ -7,5 +7,6 @@ dependencies:
   - pandas
   - openpyxl
   - xlsxwriter
-  - spacy
-  - spacy-lookups-data
+  - spacy=2.3.5
+  - spacy-lookups-data=1.0.0
+  - scikit-learn

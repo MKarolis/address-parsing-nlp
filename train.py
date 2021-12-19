@@ -12,7 +12,7 @@ TRAINED_MODEL_FILENAME = 'trained_model'
 
 TOKEN_TYPES: set = {'co', 'building', 'street', 'nr', 'area', 'postal', 'city', 'region', 'country'}
 
-TRAIN_ITERATION_COUNT = 20
+TRAIN_ITERATION_COUNT = 25
 TRAIN_DROP_PROPERTY = 0.5
 
 

@@ -1,3 +1,4 @@
+from numpy import string_
 import pandas as pd
 
 def read_DataFrame_from_excel(filename: str, numberOfRows: int = None):
@@ -46,3 +47,13 @@ def write_DataFrame_to_excel(df: pd.DataFrame, filename: str):
             'columns': [{'header': col_name} for col_name in df.columns],
             'style': 'Table Style Medium 5'
         })
+
+
+def resolve_model_name(region: str = 'DEFAULT'):
+    """
+    Resolves trained model's name by appending the region suffix
+
+    Args:
+        region - region suffix, defaults to 'DEFAULT'
+    """
+    return 'trained_model_{}'.format(region)

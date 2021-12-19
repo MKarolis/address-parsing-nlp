@@ -4,7 +4,7 @@ from train import TRAINED_MODEL_FILENAME, preprocess_data
 from utils import read_dataFrame_from_csv, read_DataFrame_from_excel, write_DataFrame_to_excel
 
 
-PARSED_DATA_FILENAME = 'parsed.xlsx'
+PARSED_DATA_FILENAME = './files/parsed.xlsx'
 
 
 def enrich_row_with_address_details(row, nlp):
@@ -86,7 +86,7 @@ def parse_addresses(frame: pd.DataFrame):
 
 if __name__ == '__main__':
 
-    filename: str = input('Enter a txt filename with the addresses data that you wish to parse (e.g. input.xlsx):\n> ')
+    filename: str = input('Enter the path of the file with the address data that you wish to parse (e.g. ./files/input.xlsx):\n> ')
     
     data: pd.DataFrame = read_DataFrame_from_excel(filename) if filename.endswith('.xlsx') else read_dataFrame_from_csv(filename)
     data = parse_addresses(data)

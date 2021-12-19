@@ -6,9 +6,9 @@ from utils import read_DataFrame_from_excel
 from spacy.util import compounding, minibatch
 
 
-TRAINING_DATA_FILENAME = 'training_data_fixed.xlsx'
+TRAINING_DATA_FILENAME = './files/training_data_fixed.xlsx'
 TRAINING_ENTRIES_COUNT = 999
-TRAINED_MODEL_FILENAME = 'trained_model'
+TRAINED_MODEL_FILENAME = './models/trained_model'
 
 TOKEN_TYPES: set = {'co', 'building', 'street', 'nr', 'area', 'postal', 'city', 'region', 'country'}
 

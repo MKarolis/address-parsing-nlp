@@ -73,10 +73,16 @@ def parse_addresses(frame: pd.DataFrame):
     original_addresses = data['person_address']
     preprocess_data(data)
 
-    nlp: spacy.language = spacy.load(TRAINED_MODEL_FILENAME)
+    MODEL_BY_COUNTRY = {
+        'JP': spacy.load('./models/trained_model_JP')
+    }
+    default_nlp: spacy.language = spacy.load('./models/trained_model_DEFAULT')
 
     data[['co', 'building', 'street', 'nr', 'area', 'postal', 'city', 'region', 'country']] = data.apply(
-        lambda row: enrich_row_with_address_details(row, nlp),
+        lambda row: enrich_row_with_address_details(
+            row, 
+            MODEL_BY_COUNTRY[row['person_ctry_code']] if row['person_ctry_code'] in MODEL_BY_COUNTRY else default_nlp
+        ),
         axis=1,
         result_type='expand'
     )

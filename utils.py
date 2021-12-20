@@ -1,4 +1,3 @@
-from numpy import string_
 import pandas as pd
 
 def read_DataFrame_from_excel(filename: str, numberOfRows: int = None):
@@ -56,4 +55,4 @@ def resolve_model_name(region: str = 'DEFAULT'):
     Args:
         region - region suffix, defaults to 'DEFAULT'
     """
-    return 'trained_model_{}'.format(region)
+    return './models/trained_model_{}'.format(region)

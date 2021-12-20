@@ -2,7 +2,7 @@ import pandas as pd
 import re
 import spacy
 import random
-from utils import read_DataFrame_from_excel
+from utils import read_DataFrame_from_excel, resolve_model_name
 from spacy.util import compounding, minibatch
 
 
@@ -12,7 +12,7 @@ TRAINED_MODEL_FILENAME = './models/trained_model'
 
 TOKEN_TYPES: set = {'co', 'building', 'street', 'nr', 'area', 'postal', 'city', 'region', 'country'}
 
-TRAIN_ITERATION_COUNT = 25
+TRAIN_ITERATION_COUNT = 20
 TRAIN_DROP_PROPERTY = 0.5
 
 
@@ -151,12 +151,15 @@ def entities_overlap(entry):
     return False
 
 
-if __name__ == '__main__':
+def train_model(entries: pd.DataFrame, model_filename: str):
+    """
+    Train a NER model from a given input dataframe and saves the model to disk.
 
-    raw_data: pd.DataFrame = read_DataFrame_from_excel(TRAINING_DATA_FILENAME, TRAINING_ENTRIES_COUNT)
-    preprocess_data(raw_data)
-
-    train_data = map(map_to_training_entry, raw_data.to_dict('records'))
+    Args:
+        entries - a pandas DataFrame containing the training data
+        model_filename - where on disk to output the model
+    """
+    train_data = map(map_to_training_entry, entries.to_dict('records'))
     train_data = list(filter(lambda entry: not entities_overlap(entry), train_data))
 
     nlp = spacy.blank('en')
@@ -166,7 +169,8 @@ if __name__ == '__main__':
     for token in TOKEN_TYPES:
         ner.add_label(token)
     
-    print('--- TRAINING THE MODEL IN {} ITERATIONS | DROP = {} ---'.format(TRAIN_ITERATION_COUNT, TRAIN_DROP_PROPERTY))
+    print('--- TRAINING {} MODEL IN {} ITERATIONS | DROP = {} ---'.format(model_filename, TRAIN_ITERATION_COUNT, TRAIN_DROP_PROPERTY))
+    print('--- TRAIN DATA SIZE: {} ---'.format(len(entries)))
     optimizer = nlp.begin_training()
 
     for itn in range(TRAIN_ITERATION_COUNT):
@@ -184,4 +188,59 @@ if __name__ == '__main__':
                 losses=losses)
         print('Iteration: {} | Losses: {}'.format(itn, losses))
 
-    nlp.to_disk(TRAINED_MODEL_FILENAME)
+    nlp.to_disk(model_filename)
+
+
+def train_model_without_countries(raw_data: pd.DataFrame, exclude: list):
+    train_model(raw_data[~raw_data['person_ctry_code'].isin(exclude)], resolve_model_name())
+
+
+def train_model_for_country(raw_data: pd.DataFrame, country_code: str):
+    train_model(raw_data[raw_data['person_ctry_code'] == country_code], resolve_model_name(country_code))
+
+
+# Version 2
+
+if __name__ == '__main__':
+    raw_data: pd.DataFrame = read_DataFrame_from_excel(TRAINING_DATA_FILENAME, TRAINING_ENTRIES_COUNT)
+    preprocess_data(raw_data)
+
+    train_model_for_country(raw_data, 'JP')
+    train_model_without_countries(raw_data, ['JP'])
+
+# Version 1
+
+# if __name__ == '__main__':
+
+#     raw_data: pd.DataFrame = read_DataFrame_from_excel(TRAINING_DATA_FILENAME, TRAINING_ENTRIES_COUNT)
+#     preprocess_data(raw_data)
+
+#     train_data = map(map_to_training_entry, raw_data.to_dict('records'))
+#     train_data = list(filter(lambda entry: not entities_overlap(entry), train_data))
+
+#     nlp = spacy.blank('en')
+#     ner = nlp.create_pipe('ner')
+#     nlp.add_pipe(ner)
+
+#     for token in TOKEN_TYPES:
+#         ner.add_label(token)
+    
+#     print('--- TRAINING THE MODEL IN {} ITERATIONS | DROP = {} ---'.format(TRAIN_ITERATION_COUNT, TRAIN_DROP_PROPERTY))
+#     optimizer = nlp.begin_training()
+
+#     for itn in range(TRAIN_ITERATION_COUNT):
+#         random.shuffle(train_data)
+#         losses = {}
+
+#         batches = minibatch(train_data, size=compounding(4, 32, 1.001))
+#         for batch in batches:
+#             texts, annotations = zip(*batch)
+#             nlp.update(
+#                 texts,  
+#                 annotations,  
+#                 drop=TRAIN_DROP_PROPERTY,  
+#                 sgd=optimizer,
+#                 losses=losses)
+#         print('Iteration: {} | Losses: {}'.format(itn, losses))
+
+#     nlp.to_disk(TRAINED_MODEL_FILENAME)
